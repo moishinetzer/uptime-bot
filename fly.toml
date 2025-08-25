@@ -1,0 +1,40 @@
+# fly.toml app configuration file generated for uptime-bot on 2025-08-25T20:58:15+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'uptime-bot'
+primary_region = 'lhr'
+
+[build]
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[mounts]
+  source = 'uptime_kuma_data'
+  destination = '/app/data'
+
+[deploy]
+  strategy = 'rolling'
+
+[[checks]]
+  name = 'uptime_kuma_health'
+  grace_period = '10s'
+  interval = '30s'
+  method = 'GET'
+  path = '/'
+  port = 3001
+  protocol = 'http'
+  timeout = '5s'
+  type = 'http'
